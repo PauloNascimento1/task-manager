@@ -2,11 +2,15 @@
 
 public class ConsoleManager
 {
-    List<string> taskList = new List<string>();
+    public int TaskId { get; set; }
+    public string? Description { get; set; }
+    public DateTime CreationTime { get; set; } = DateTime.Now.ToLocalTime();
+
+    List<TaskItem> taskList = new List<TaskItem>();
     Utils utils = new Utils();
 
     private string optionsMenu = "\n1 - Criar tarefa\n" +
-                                   "2 - Mostrar tarefas\n" +
+                                   "2 - Exibir tarefas\n" +
                                    "3 - Remover tarefa\n";
 
     public void InitialMenu()
@@ -23,13 +27,13 @@ public class ConsoleManager
                 break;
             case 2:
                 ShowTask();
-            break;
+                break;
             case 3:
                 RemoveTask();
-            break;
+                break;
             default:
                 Console.WriteLine("Opção Inválida!");
-             break;
+                break;
         }
     }
 
@@ -37,16 +41,23 @@ public class ConsoleManager
     {
         Console.Write("\nAdicione uma tarefa: ");
 
-        string task = Console.ReadLine();
+        string taskDescription = Console.ReadLine();
 
-        if (string.IsNullOrEmpty(task))
+        if (string.IsNullOrEmpty(taskDescription))
         {
             Console.WriteLine("Insira corretamente a tarefa!");
             InitialMenu();
         }
 
-        taskList.Add(task);
-        Console.WriteLine($"\nTarefa incluída com sucesso! -> '{task}'");
+        var newTask = new TaskItem
+        {
+            TaskId = taskList.Count + 1,
+            Description = taskDescription
+        };
+
+        taskList.Add(newTask);
+
+        Console.WriteLine($"\nTarefa incluída com sucesso! -> '{newTask.Description}', \nData de criação: '{newTask.CreationTime}'");
 
         utils.ClearConsole();
         InitialMenu();
@@ -66,7 +77,7 @@ public class ConsoleManager
 
         for (int i = 1; i <= taskList.Count; i++)
         {
-            Console.WriteLine($"{i} - {taskList[i - 1]}");
+            Console.WriteLine($"{i} - '{taskList[i - 1].Description}', Data de criação: '{taskList[i - 1].CreationTime}'");
         }
 
         utils.ClearConsole();
@@ -87,18 +98,17 @@ public class ConsoleManager
 
         for (int i = 1; i <= taskList.Count; i++)
         {
-            Console.WriteLine($"{i} - {taskList[i - 1]}");
+            Console.WriteLine($"{i} - '{taskList[i - 1].Description}', Data de criação: '{taskList[i - 1].CreationTime}'");
         }
 
         Console.Write("\nSelecione uma tarefa para remover passando o número exibido: ");
         int optionForDelete = int.Parse(Console.ReadLine());
 
-        Console.WriteLine($"\nRemovendo a tarefa -> '{taskList[optionForDelete - 1]}'");
+        Console.WriteLine($"\nRemovendo a tarefa -> '{taskList[optionForDelete - 1].Description}, \nData de criação: {taskList[optionForDelete - 1].CreationTime}'...");
         taskList.Remove(taskList[optionForDelete - 1]);
- 
+
         utils.ClearConsole();
         InitialMenu();
-
 
     }
 }
